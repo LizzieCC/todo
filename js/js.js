@@ -8,17 +8,40 @@ input.addEventListener("keypress", function(event){
     }
 })
 
-//Change state of checkbox 
-var ul = document.getElementById("tasks");
-ul.addEventListener("click",function(ev){
-    var element = ev.target;
-    if(element.type === "checkbox"){
-        element.nextSibling.classList.toggle("done");
-    } else{
-        return;
-    }
-})
+var checkboxes = document.getElementsByName("todo");
+for(let i=0;i<checkboxes.length; i++){
+    changeState(checkboxes[i]);
+}
 
+//Change state of checkbox 
+function changeState(checkbox){
+    checkbox.onclick=function(){
+        if(checkbox.checked){
+            checkbox.nextSibling.classList.toggle("done");
+            checkIfDone(checkbox);
+        } else {
+            checkbox.nextSibling.classList.toggle("done");
+            checkIfDone(checkbox);
+            return;
+            }
+        }
+}
+
+function checkIfDone(element){
+    var tasks = document.getElementById("tasks");
+    var doneList = document.getElementById("tasks-done");
+    if(element.nextSibling.className === "done"){
+        var readd =  element.parentElement;
+        element.parentElement.remove();
+        doneList.appendChild(readd);
+    } else{
+        var readd2 =  element.parentElement;
+        element.parentElement.remove();
+        tasks.appendChild(readd2);
+    }
+}
+
+//Function to addTask
 function addTask(){
     //Create list element
     var li = document.createElement("li");
@@ -26,7 +49,9 @@ function addTask(){
     var span = document.createElement("span");
     //Set attributes 
     checkbox.type = "checkbox";
+    checkbox.name = "todo";
     checkbox.checked = false;
+    checkbox.value = 1+document.getElementById("tasks").getElementsByTagName("li").length;
     //Append
     li.appendChild(checkbox);
     var span = li.appendChild(span);
@@ -41,7 +66,11 @@ function addTask(){
         alert("Do something!");
     } else {
         document.getElementById("tasks").appendChild(li);
+        changeState(checkbox);
     }
     //Clear textbox
     document.getElementById("newitem").value = "";
 }
+
+
+  
